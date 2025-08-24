@@ -667,9 +667,15 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
                                     <items>
-                                        <menuItem title="PhatPKG Help" keyEquivalent="?" id="FKE-Sm-Kum">
+                                        <menuItem title="PhatPKG Wiki…" keyEquivalent="?" id="FKE-Sm-Kum" userLabel="PhatPKG Wiki">
                                             <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                                <action selector="openGitHubWiki:" target="Ady-hI-5gd" id="936-Le-cWA"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="PhatPKG Repo…" id="AOW-vw-fEV" userLabel="PhatPKG Repo">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="openGitHubRepository:" target="Ady-hI-5gd" id="fma-L1-LY9"/>
                                             </connections>
                                         </menuItem>
                                     </items>

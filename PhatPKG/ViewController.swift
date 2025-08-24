@@ -147,11 +147,11 @@ class ViewController: NSViewController {
     }
     
     @IBAction func openGitHubWiki(_ sender: Any?) {
-        NSWorkspace.shared.open(URL(string: "https://github.com/apple/phat-pkg/wiki")!)
+        NSWorkspace.shared.open(URL(string: "https://github.com/gilburns/PhatPKG/wiki")!)
     }
     
     @IBAction func openGitHubRepository(_ sender: Any?) {
-        NSWorkspace.shared.open(URL(string: "https://github.com/apple/phat-pkg")!)
+        NSWorkspace.shared.open(URL(string: "https://github.com/gilburns/PhatPKG")!)
     }
 
     // MARK: - Text Field Actions
