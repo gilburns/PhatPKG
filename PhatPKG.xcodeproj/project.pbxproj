@@ -8,10 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		1BDB80392E5BCC9700EE98C7 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1BDB80382E5BCC9700EE98C7 /* Sparkle */; };
+		1BDB80492E5BD47A00EE98C7 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 1BDB80482E5BD47A00EE98C7 /* ArgumentParser */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1BDB803E2E5BD41400EE98C7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1B271D3D2E5B4FD300C85ABB /* PhatPKG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhatPKG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BDB80402E5BD41400EE98C7 /* PhatPKG-CLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "PhatPKG-CLI"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -22,6 +36,14 @@
 			);
 			target = 1B271D3C2E5B4FD300C85ABB /* PhatPKG */;
 		};
+		1BDB804B2E5BD64E00EE98C7 /* Exceptions for "PhatPKG" folder in "PhatPKG-CLI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PhatPKGCore.swift,
+				PKGCreatorUniversal.swift,
+			);
+			target = 1BDB803F2E5BD41400EE98C7 /* PhatPKG-CLI */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -29,8 +51,14 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1BDB803B2E5BCE4700EE98C7 /* Exceptions for "PhatPKG" folder in "PhatPKG" target */,
+				1BDB804B2E5BD64E00EE98C7 /* Exceptions for "PhatPKG" folder in "PhatPKG-CLI" target */,
 			);
 			path = PhatPKG;
+			sourceTree = "<group>";
+		};
+		1BDB80412E5BD41400EE98C7 /* PhatPKG-CLI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "PhatPKG-CLI";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +72,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1BDB803D2E5BD41400EE98C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1BDB80492E5BD47A00EE98C7 /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				1B271D3F2E5B4FD300C85ABB /* PhatPKG */,
+				1BDB80412E5BD41400EE98C7 /* PhatPKG-CLI */,
 				1B271D3E2E5B4FD300C85ABB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				1B271D3D2E5B4FD300C85ABB /* PhatPKG.app */,
+				1BDB80402E5BD41400EE98C7 /* PhatPKG-CLI */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,6 +127,29 @@
 			productReference = 1B271D3D2E5B4FD300C85ABB /* PhatPKG.app */;
 			productType = "com.apple.product-type.application";
 		};
+		1BDB803F2E5BD41400EE98C7 /* PhatPKG-CLI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BDB80442E5BD41400EE98C7 /* Build configuration list for PBXNativeTarget "PhatPKG-CLI" */;
+			buildPhases = (
+				1BDB803C2E5BD41400EE98C7 /* Sources */,
+				1BDB803D2E5BD41400EE98C7 /* Frameworks */,
+				1BDB803E2E5BD41400EE98C7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1BDB80412E5BD41400EE98C7 /* PhatPKG-CLI */,
+			);
+			name = "PhatPKG-CLI";
+			packageProductDependencies = (
+				1BDB80482E5BD47A00EE98C7 /* ArgumentParser */,
+			);
+			productName = "PhatPKG-CLI";
+			productReference = 1BDB80402E5BD41400EE98C7 /* PhatPKG-CLI */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -100,6 +161,9 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					1B271D3C2E5B4FD300C85ABB = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					1BDB803F2E5BD41400EE98C7 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -115,6 +179,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1BDB80372E5BCC9700EE98C7 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				1BDB80472E5BD47A00EE98C7 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1B271D3E2E5B4FD300C85ABB /* Products */;
@@ -122,6 +187,7 @@
 			projectRoot = "";
 			targets = (
 				1B271D3C2E5B4FD300C85ABB /* PhatPKG */,
+				1BDB803F2E5BD41400EE98C7 /* PhatPKG-CLI */,
 			);
 		};
 /* End PBXProject section */
@@ -138,6 +204,13 @@
 
 /* Begin PBXSourcesBuildPhase section */
 		1B271D392E5B4FD300C85ABB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BDB803C2E5BD41400EE98C7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -323,6 +396,32 @@
 			};
 			name = Release;
 		};
+		1BDB80452E5BD41400EE98C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G4MQ57TVLE;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gilburns.PhatPKG-CLI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1BDB80462E5BD41400EE98C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G4MQ57TVLE;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gilburns.PhatPKG-CLI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -344,6 +443,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		1BDB80442E5BD41400EE98C7 /* Build configuration list for PBXNativeTarget "PhatPKG-CLI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BDB80452E5BD41400EE98C7 /* Debug */,
+				1BDB80462E5BD41400EE98C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -355,6 +463,14 @@
 				minimumVersion = 2.7.1;
 			};
 		};
+		1BDB80472E5BD47A00EE98C7 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -362,6 +478,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1BDB80372E5BCC9700EE98C7 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		1BDB80482E5BD47A00EE98C7 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1BDB80472E5BD47A00EE98C7 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
