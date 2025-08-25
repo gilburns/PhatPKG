@@ -38,7 +38,6 @@ class PKGCreatorUniversal {
             // Cleanup PKG creation temp directory
             do {
                 try fileManager.removeItem(atPath: tempDir)
-                log("Cleaned up PKG temp directory: \(tempDir)")
             } catch {
                 log("Warning: Failed to clean up PKG temp directory: \(error.localizedDescription)")
             }
@@ -225,7 +224,10 @@ class PKGCreatorUniversal {
         let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: outputData, encoding: .utf8) ?? ""
         
-        log("Command output: \(output)")
+        // Only log output if there was an error
+        if process.terminationStatus != 0 {
+            log("Command failed with output: \(output)")
+        }
 
         return process.terminationStatus == 0
     }

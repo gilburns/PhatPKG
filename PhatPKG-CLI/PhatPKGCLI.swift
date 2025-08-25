@@ -9,14 +9,15 @@ import ArgumentParser
 import Foundation
 
 /// Command-line tool for creating universal macOS packages from separate ARM64 and Intel x86_64 applications
-@available(macOS 10.15, macCatalyst 13, iOS 13, tvOS 13, watchOS 6, *)
+@available(macOS 10.15, *)
+@main
 struct PhatPKGCLI: AsyncParsableCommand {
     
     static let configuration = CommandConfiguration(
-        commandName: "phatpkg",
+        commandName: "PhatPKG-CLI",
         abstract: "Create universal macOS packages from separate ARM64 and Intel x86_64 applications.",
         discussion: """
-            PhatPKG creates a universal installer package that automatically detects the system 
+            PhatPKG-CLI creates a universal installer package that automatically detects the system 
             architecture and installs the appropriate version of your app.
             
             Supported input formats:
@@ -24,8 +25,8 @@ struct PhatPKGCLI: AsyncParsableCommand {
             • Remote URLs: Any HTTPS URL to supported formats
             
             Examples:
-              phatpkg --arm64 MyApp-arm64.zip --intel MyApp-x86.zip --output ~/Desktop
-              phatpkg --arm64 https://example.com/MyApp-arm64.dmg --intel ./MyApp-intel.app --output ./packages
+              PhatPKG-CLI --arm64 MyApp-arm64.zip --intel MyApp-x86.zip --output ~/Desktop
+              PhatPKG-CLI --arm64 https://example.com/MyApp-arm64.dmg --intel https://example.com/MyApp.dmg --output ./packages
             """,
         version: "1.0.0"
     )
@@ -101,7 +102,3 @@ struct PhatPKGCLI: AsyncParsableCommand {
         }
     }
 }
-
-// Run the CLI tool
-await PhatPKGCLI.main()
-

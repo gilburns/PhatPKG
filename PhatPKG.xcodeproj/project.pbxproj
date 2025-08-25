@@ -9,17 +9,30 @@
 /* Begin PBXBuildFile section */
 		1BDB80392E5BCC9700EE98C7 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 1BDB80382E5BCC9700EE98C7 /* Sparkle */; };
 		1BDB80492E5BD47A00EE98C7 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 1BDB80482E5BD47A00EE98C7 /* ArgumentParser */; };
+		1BDB808F2E5BEA8900EE98C7 /* PhatPKG-CLI in Embed CLI */ = {isa = PBXBuildFile; fileRef = 1BDB80402E5BD41400EE98C7 /* PhatPKG-CLI */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1BDB80902E5BEBC800EE98C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B271D352E5B4FD300C85ABB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BDB803F2E5BD41400EE98C7;
+			remoteInfo = "PhatPKG-CLI";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
-		1BDB803E2E5BD41400EE98C7 /* CopyFiles */ = {
+		1BDB808E2E5BEA7E00EE98C7 /* Embed CLI */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = "";
+			dstSubfolderSpec = 6;
 			files = (
+				1BDB808F2E5BEA8900EE98C7 /* PhatPKG-CLI in Embed CLI */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			name = "Embed CLI";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -111,10 +124,12 @@
 				1B271D392E5B4FD300C85ABB /* Sources */,
 				1B271D3A2E5B4FD300C85ABB /* Frameworks */,
 				1B271D3B2E5B4FD300C85ABB /* Resources */,
+				1BDB808E2E5BEA7E00EE98C7 /* Embed CLI */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1BDB80912E5BEBC800EE98C7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1B271D3F2E5B4FD300C85ABB /* PhatPKG */,
@@ -133,7 +148,6 @@
 			buildPhases = (
 				1BDB803C2E5BD41400EE98C7 /* Sources */,
 				1BDB803D2E5BD41400EE98C7 /* Frameworks */,
-				1BDB803E2E5BD41400EE98C7 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -218,6 +232,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1BDB80912E5BEBC800EE98C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BDB803F2E5BD41400EE98C7 /* PhatPKG-CLI */;
+			targetProxy = 1BDB80902E5BEBC800EE98C7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1B271D4A2E5B4FD400C85ABB /* Debug */ = {
@@ -399,12 +421,15 @@
 		1BDB80452E5BD41400EE98C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G4MQ57TVLE;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gilburns.PhatPKG-CLI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -412,12 +437,15 @@
 		1BDB80462E5BD41400EE98C7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G4MQ57TVLE;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				OTHER_CODE_SIGN_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gilburns.PhatPKG-CLI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
