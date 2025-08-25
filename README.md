@@ -2,7 +2,7 @@
 
 Create universal macOS installer packages from separate ARM64 and Intel x86_64 applications.
 
-![PhatPKG Banner](wiki/images/phatpkg-logo.png)
+![PhatPKG Banner](https://github.com/gilburns/PhatPKG/wiki/images/phatpkg-logo.png)
 
 ## What is PhatPKG?
 
@@ -41,10 +41,9 @@ phatpkg --arm64 MyApp-arm64.zip --intel MyApp-intel.zip --output ~/Desktop
 
 ## Documentation
 
-📚 **[Visit the Wiki](wiki)** for complete guides:
-- **[GUI Guide](wiki/GUI-Guide)** - Step-by-step visual instructions
-- **[CLI Guide](wiki/CLI-Guide)** - Command-line reference and automation
-- **[Troubleshooting](wiki/Troubleshooting)** - Common issues and solutions
+📚 **[Visit the Wiki](https://github.com/gilburns/PhatPKG/wiki)** for complete guides:
+- **[GUI Guide](https://github.com/gilburns/PhatPKG/wiki/GUI-Guide)** - Step-by-step visual instructions
+- **[CLI Guide](https://github.com/gilburns/PhatPKG/wiki/CLI-Guide)** - Command-line reference and automation
 
 ## Support
 
