@@ -31,7 +31,7 @@ PhatPKG combines your ARM64 (Apple Silicon) and Intel x86_64 app versions into a
 
 For command-line usage:
 ```bash
-phatpkg --arm64 MyApp-arm64.zip --intel MyApp-intel.zip --output ~/Desktop
+PhatPKG-CLI --arm64 MyApp-arm64.zip --intel MyApp-intel.zip --output ~/Desktop
 ```
 
 ## Requirements
