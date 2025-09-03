@@ -28,7 +28,7 @@ struct PhatPKGCLI: AsyncParsableCommand {
               PhatPKG-CLI --arm64 MyApp-arm64.zip --intel MyApp-x86.zip --output ~/Desktop
               PhatPKG-CLI --arm64 https://example.com/MyApp-arm64.dmg --intel https://example.com/MyApp.dmg --output ./packages
             """,
-        version: "1.0.0"
+        version: "1.1.0"
     )
     
     @Option(name: .shortAndLong, help: "Path or URL to ARM64 (Apple Silicon) application source")
@@ -79,8 +79,8 @@ struct PhatPKGCLI: AsyncParsableCommand {
             }
         }
         
-        // Create PhatPKGCore instance
-        let core = PhatPKGCore(progressCallback: progressCallback, logCallback: logCallback)
+        // Create PhatPKGCore instance (disable console logging to prevent duplicates)
+        let core = PhatPKGCore(progressCallback: progressCallback, logCallback: logCallback, disableConsoleLogging: true)
         
         do {
             // Process the universal package creation

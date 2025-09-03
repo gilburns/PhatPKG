@@ -24,9 +24,15 @@ class PhatPKGCore {
     /// - Parameters:
     ///   - progressCallback: Called when progress status changes (for UI updates)
     ///   - logCallback: Called for detailed logging messages
-    init(progressCallback: ProgressCallback? = nil, logCallback: LogCallback? = nil) {
+    ///   - disableConsoleLogging: When true, disables LogManager console output to prevent duplicates (useful for CLI)
+    init(progressCallback: ProgressCallback? = nil, logCallback: LogCallback? = nil, disableConsoleLogging: Bool = false) {
         self.progressCallback = progressCallback
         self.logCallback = logCallback
+        
+        // Configure LogManager console output
+        if disableConsoleLogging {
+            LogManager.shared.shouldPrintToConsole = false
+        }
     }
     
     /// Main entry point for creating a universal package
@@ -72,9 +78,9 @@ class PhatPKGCore {
             // Cleanup main temp directory and all subdirectories
             do {
                 try FileManager.default.removeItem(at: tempDirectoryURL)
-                log("Cleaned up main temp directory: \(tempDirectoryURL.path)")
+                LogManager.shared.debug("Cleaned up main temp directory: \(tempDirectoryURL.path)", source: "PhatPKGCore")
             } catch {
-                log("Warning: Failed to clean up main temp directory: \(error.localizedDescription)")
+                LogManager.shared.warning("Failed to clean up main temp directory: \(error.localizedDescription)", source: "PhatPKGCore")
             }
         }
         
@@ -84,12 +90,12 @@ class PhatPKGCore {
         
         // Process ARM64 source
         progressCallback?("Processing ARM64 source...")
-        log("Processing ARM64 source...")
+        LogManager.shared.info("Processing ARM64 source...", source: "PhatPKGCore")
         let armAppDetails = try await extractAppDetails(inputPath: armInput, outputDirectory: armTempDirectoryURL.path)
         
         // Process Intel x86 source
         progressCallback?("Processing Intel x86 source...")
-        log("Processing Intel x86 source...")
+        LogManager.shared.info("Processing Intel x86 source...", source: "PhatPKGCore")
         let intelAppDetails = try await extractAppDetails(inputPath: intelInput, outputDirectory: intelTempDirectoryURL.path)
         
         // Validate architectures
@@ -112,7 +118,7 @@ class PhatPKGCore {
         
         // Create universal package
         progressCallback?("Creating universal package...")
-        log("Creating universal package...")
+        LogManager.shared.info("Creating universal package...", source: "PhatPKGCore")
         let pkgCreator = PKGCreatorUniversal()
         
         if let result = pkgCreator.createUniversalPackage(
@@ -120,10 +126,10 @@ class PhatPKGCore {
             inputPathx86_64: intelAppDetails.appPath,
             outputDir: outputDirectory
         ) {
-            log("Successfully created universal package:")
-            log("Package: \(result.packagePath)")
-            log("App: \(result.appName) v\(result.appVersion)")
-            log("Bundle ID: \(result.appID)")
+            LogManager.shared.info("Successfully created universal package:", source: "PhatPKGCore")
+            LogManager.shared.info("Package: \(result.packagePath)", source: "PhatPKGCore")
+            LogManager.shared.info("App: \(result.appName) v\(result.appVersion)", source: "PhatPKGCore")
+            LogManager.shared.info("Bundle ID: \(result.appID)", source: "PhatPKGCore")
             progressCallback?("Package created successfully")
         } else {
             throw PhatPKGError.packageCreationFailed("Failed to create universal package")
@@ -133,6 +139,7 @@ class PhatPKGCore {
     // MARK: - Private Helper Methods
     
     private func log(_ message: String) {
+        LogManager.shared.info(message, source: "PhatPKGCore")
         logCallback?("[PhatPKGCore] \(message)")
     }
     
@@ -158,12 +165,12 @@ class PhatPKGCore {
         let fileName = url.lastPathComponent.isEmpty ? "download.\(pathExtension)" : url.lastPathComponent
         let localPath = tempDir + "/" + fileName
         
-        log("Downloading from: \(urlString)")
+        LogManager.shared.info("Downloading from: \(urlString)", source: "PhatPKGCore")
         
         do {
             let (tempURL, _) = try await URLSession.shared.download(from: url)
             try FileManager.default.moveItem(at: tempURL, to: URL(fileURLWithPath: localPath))
-            log("Downloaded to: \(localPath)")
+            LogManager.shared.info("Downloaded to: \(localPath)", source: "PhatPKGCore")
             return localPath
         } catch {
             throw PhatPKGError.downloadFailed("Failed to download from \(urlString): \(error.localizedDescription)")
@@ -178,7 +185,7 @@ class PhatPKGCore {
     /// - Throws: Various extraction and validation errors
     private func extractAppDetails(inputPath: String, outputDirectory: String?) async throws -> (appPath: String, appName: String, appID: String, appVersion: String, appArch: String) {
         
-        log("Starting extractAppDetails for: \(inputPath)")
+        LogManager.shared.debug("Starting extractAppDetails for: \(inputPath)", source: "PhatPKGCore")
         
         // Check if input is a URL and download if needed
         let actualPath: String
@@ -198,7 +205,7 @@ class PhatPKGCore {
             do {
                 try FileManager.default.removeItem(atPath: tempDir)
             } catch {
-                log("Warning: Failed to clean up extraction temp directory: \(error.localizedDescription)")
+                LogManager.shared.warning("Failed to clean up extraction temp directory: \(error.localizedDescription)", source: "PhatPKGCore")
             }
             
             // Cleanup downloaded file and its parent directory if it was downloaded
@@ -206,9 +213,9 @@ class PhatPKGCore {
                 let downloadDir = (downloadPath as NSString).deletingLastPathComponent
                 do {
                     try FileManager.default.removeItem(atPath: downloadDir)
-                    log("Cleaned up downloaded file: \(downloadPath)")
+                    LogManager.shared.debug("Cleaned up downloaded file: \(downloadPath)", source: "PhatPKGCore")
                 } catch {
-                    log("Warning: Failed to clean up downloaded file directory: \(error.localizedDescription)")
+                    LogManager.shared.warning("Failed to clean up downloaded file directory: \(error.localizedDescription)", source: "PhatPKGCore")
                 }
             }
         }
@@ -220,32 +227,32 @@ class PhatPKGCore {
 
         let actualPathLower = actualPath.lowercased()
         if actualPathLower.hasSuffix(".zip") || actualPathLower.hasSuffix(".tbz") || actualPathLower.hasSuffix(".tar.bz2") || actualPathLower.hasSuffix(".bz2") || actualPathLower.hasSuffix(".dmg") {
-            log("Extracting archive: \(actualPath)")
+            LogManager.shared.info("Extracting archive: \(actualPath)", source: "PhatPKGCore")
             appPath = try extractArchive(atPath: actualPath, to: tempDir)
         } else if actualPath.hasSuffix(".app") {
-            log("Using .app directly: \(actualPath)")
+            LogManager.shared.info("Using .app directly: \(actualPath)", source: "PhatPKGCore")
             appPath = actualPath
         } else {
             throw PhatPKGError.extractionFailed("Unsupported input type: \(actualPath)")
         }
 
-        log("Extracted app path: \(appPath)")
+        LogManager.shared.debug("Extracted app path: \(appPath)", source: "PhatPKGCore")
         
         // Extract app information
-        log("Extracting app name...")
+        LogManager.shared.debug("Extracting app name...", source: "PhatPKGCore")
         let appName = (appPath as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
         
-        log("Getting app version...")
+        LogManager.shared.debug("Getting app version...", source: "PhatPKGCore")
         let appVersion = try getAppVersion(fromApp: appPath)
         
-        log("Reading Info.plist...")
+        LogManager.shared.debug("Reading Info.plist...", source: "PhatPKGCore")
         let infoPlistPath = appPath + "/Contents/Info.plist"
         let infoPlist = NSDictionary(contentsOfFile: infoPlistPath)
         guard let appID = infoPlist?["CFBundleIdentifier"] as? String else {
             throw PhatPKGError.appNotFound("Could not retrieve app bundle identifier")
         }
 
-        log("Getting app architecture...")
+        LogManager.shared.debug("Getting app architecture...", source: "PhatPKGCore")
         let appArch: String = getAppArchitecture(appPath: appPath)
         
         guard appArch != "unknown" else {
@@ -275,18 +282,18 @@ class PhatPKGCore {
         let pathLower = path.lowercased()
         
         if pathLower.hasSuffix(".zip") {
-            log("Extracting ZIP file...")
+            LogManager.shared.info("Extracting ZIP file...", source: "PhatPKGCore")
             try runShellCommand("/usr/bin/ditto", arguments: ["-x", "-k", path, destination])
         } else if pathLower.hasSuffix(".tbz") || pathLower.hasSuffix(".tar.bz2") {
-            log("Extracting TAR.BZ2 file...")
+            LogManager.shared.info("Extracting TAR.BZ2 file...", source: "PhatPKGCore")
             try runShellCommand("/usr/bin/tar", arguments: ["-xjf", path, "-C", destination])
         } else if pathLower.hasSuffix(".bz2") && !pathLower.hasSuffix(".tar.bz2") {
-            log("Extracting BZ2 file...")
+            LogManager.shared.info("Extracting BZ2 file...", source: "PhatPKGCore")
             let tempBz2Path = destination + "/" + (path as NSString).lastPathComponent
             try FileManager.default.copyItem(atPath: path, toPath: tempBz2Path)
             try runShellCommand("/usr/bin/bunzip2", arguments: [tempBz2Path])
         } else if pathLower.hasSuffix(".dmg") {
-            log("Mounting and extracting DMG file...")
+            LogManager.shared.info("Mounting and extracting DMG file...", source: "PhatPKGCore")
             return try extractFromDMG(atPath: path, to: destination)
         } else {
             let fileExtension = (path as NSString).pathExtension
@@ -380,9 +387,9 @@ class PhatPKGCore {
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: outputData, encoding: .utf8) ?? ""
             
-            log("Command output: \(output)")
+            LogManager.shared.debug("Command output: \(output)", source: "PhatPKGCore")
         } catch {
-            log("Error running command: \(error)")
+            LogManager.shared.error("Error running command: \(error)", source: "PhatPKGCore")
             throw PhatPKGError.extractionFailed("Shell command failed: \(error.localizedDescription)")
         }
         
@@ -403,7 +410,7 @@ class PhatPKGCore {
               let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil),
               let plistDict = plist as? [String: Any],
               let executableName = plistDict["CFBundleExecutable"] as? String else {
-            log("Unable to read Info.plist or CFBundleExecutable key.")
+            LogManager.shared.error("Unable to read Info.plist or CFBundleExecutable key.", source: "PhatPKGCore")
             return "unknown"
         }
         
@@ -419,7 +426,7 @@ class PhatPKGCore {
         do {
             try process.run()
         } catch {
-            log("Failed to run file command: \(error)")
+            LogManager.shared.error("Failed to run file command: \(error)", source: "PhatPKGCore")
             return "unknown"
         }
         
