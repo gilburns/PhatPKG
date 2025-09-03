@@ -39,7 +39,7 @@ class PKGCreatorUniversal {
             do {
                 try fileManager.removeItem(atPath: tempDir)
             } catch {
-                log("Warning: Failed to clean up PKG temp directory: \(error.localizedDescription)")
+                LogManager.shared.warning("Failed to clean up PKG temp directory: \(error.localizedDescription)", source: "PKGCreator")
             }
         }
         
@@ -47,7 +47,7 @@ class PKGCreatorUniversal {
             try fileManager.createDirectory(atPath: appsArm, withIntermediateDirectories: true)
             try fileManager.createDirectory(atPath: appsX86, withIntermediateDirectories: true)
         } catch {
-            log("Error: Failed to create temp root directories - \(error)")
+            LogManager.shared.error("Failed to create temp root directories - \(error)", source: "PKGCreator")
             return nil
         }
 
@@ -60,27 +60,27 @@ class PKGCreatorUniversal {
             try fileManager.copyItem(atPath: inputPathArm64, toPath: destArm)
             try fileManager.copyItem(atPath: inputPathx86_64, toPath: destX86)
         } catch {
-            log("Error copying app bundles - \(error)")
+            LogManager.shared.error("Error copying app bundles - \(error)", source: "PKGCreator")
             return nil
         }
 
         guard let appInfoArm = extractAppInfo(from: destArm) else {
-            log("Error reading Info.plist from ARM app")
+            LogManager.shared.error("Error reading Info.plist from ARM app", source: "PKGCreator")
             return nil
         }
 
         guard let appInfox86 = extractAppInfo(from: destX86) else {
-            log("Error reading Info.plist from X86_64 app")
+            LogManager.shared.error("Error reading Info.plist from X86_64 app", source: "PKGCreator")
             return nil
         }
 
         if appInfoArm.appID != appInfox86.appID {
-            log("App IDs do not match! Aborting...")
+            LogManager.shared.error("App IDs do not match! Aborting...", source: "PKGCreator")
             return nil
         }
         
         if appInfoArm.appVersion != appInfox86.appVersion {
-            log("App versions do not match! Aborting...")
+            LogManager.shared.error("App versions do not match! Aborting...", source: "PKGCreator")
             return nil
         }
         
@@ -146,7 +146,7 @@ class PKGCreatorUniversal {
         do {
             try xml.write(toFile: distributionXML, atomically: true, encoding: .utf8)
         } catch {
-            log("Failed to write distribution.xml - \(error)")
+            LogManager.shared.error("Failed to write distribution.xml - \(error)", source: "PKGCreator")
             return nil
         }
 
@@ -157,7 +157,7 @@ class PKGCreatorUniversal {
         if canWriteToOutput {
             finalPackagePath = "\(outputDir)/\(appInfoArm.appName)-\(appInfoArm.appVersion)-universal.pkg"
         } else {
-            log("Warning: Cannot write to specified output directory. Using Desktop instead.")
+            LogManager.shared.warning("Cannot write to specified output directory. Using Desktop instead.", source: "PKGCreator")
             finalPackagePath = "\(desktopPath)/\(appInfoArm.appName)-\(appInfoArm.appVersion)-universal.pkg"
         }
 
@@ -169,7 +169,7 @@ class PKGCreatorUniversal {
         if success && fileManager.fileExists(atPath: finalPackagePath) {
             return (finalPackagePath, appInfoArm.appName, appInfoArm.appID, appInfoArm.appVersion)
         } else {
-            log("Universal package creation failed.")
+            LogManager.shared.error("Universal package creation failed.", source: "PKGCreator")
             return nil
         }
     }
@@ -180,7 +180,7 @@ class PKGCreatorUniversal {
     /// - Returns: True if modification was successful, false otherwise
     private func modifyComponentPlist(at path: String) -> Bool {
         guard let plistData = NSMutableArray(contentsOfFile: path) else {
-            log("Error: Unable to read component plist.")
+            LogManager.shared.error("Unable to read component plist.", source: "PKGCreator")
             return false
         }
         
@@ -226,7 +226,7 @@ class PKGCreatorUniversal {
         
         // Only log output if there was an error
         if process.terminationStatus != 0 {
-            log("Command failed with output: \(output)")
+            LogManager.shared.error("Command failed with output: \(output)", source: "PKGCreator")
         }
 
         return process.terminationStatus == 0
@@ -234,11 +234,11 @@ class PKGCreatorUniversal {
     
     // MARK: - Helper Functions
     
-    /// Logs messages to console
+    /// Logs messages using the centralized LogManager
     /// Provides consistent logging format for update operations
     /// - Parameter message: Message to log
     func log(_ message: String) {
-        print("[PKGCreator] \(message)")
+        LogManager.shared.info(message, source: "PKGCreator")
     }
 
 }

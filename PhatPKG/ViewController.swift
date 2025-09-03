@@ -22,7 +22,14 @@ class ViewController: NSViewController {
     @IBOutlet var progressIndicator: NSProgressIndicator!
     @IBOutlet var progressLabel: NSTextField!
     
+    // MARK: - Log Panel Outlets
+    @IBOutlet weak var showLogPanelButton: NSButton!
+    @IBOutlet weak var logPanelContainer: NSView!
     
+    
+    // MARK: - Log Panel Properties
+    private var logPanelViewController: LogPanelViewController?
+    private var logPanelVisible = false
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -39,18 +46,22 @@ class ViewController: NSViewController {
         outputDirectory.action = #selector(textFieldChanged(_:))
         
         updateBuildButtonState()
+        setupLogPanel()
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
         
         // Lock window size
-//        if let window = view.window {
-//            let fixedSize = NSSize(width: 550, height: 272)
-//            window.setContentSize(fixedSize)
-//            window.minSize = fixedSize
-//            window.maxSize = fixedSize
-//        }
+        if let window = view.window {
+            
+            let windowWidth = view.window?.frame.width ?? 0
+            let windowHeight = view.window?.frame.height ?? 0
+
+            let fixedSize = NSSize(width: windowWidth, height: windowHeight)
+            window.minSize = fixedSize
+            window.maxSize = fixedSize
+        }
     }
 
     override var representedObject: Any? {
@@ -105,6 +116,7 @@ class ViewController: NSViewController {
     @IBAction func buildPhatPKG(_ sender: Any?) {
         progressIndicator.startAnimation(nil)
         uiStateIsEnabled(for: false)
+        LogManager.shared.info("Starting universal package build...", source: "ViewController")
         progressLabel.stringValue = "Building universal package..."
         
         Task {
@@ -116,7 +128,7 @@ class ViewController: NSViewController {
                         }
                     },
                     logCallback: { [weak self] message in
-                        self?.log(message)
+                        LogManager.shared.log(message, source: "PhatPKGCore")
                     }
                 )
                 
@@ -128,10 +140,11 @@ class ViewController: NSViewController {
                 
                 DispatchQueue.main.async {
                     self.progressLabel.stringValue = "Package created successfully!"
+                    LogManager.shared.info("Package created successfully!", source: "ViewController")
                 }
                 
             } catch {
-                log("Build failed: \(error.localizedDescription)")
+                LogManager.shared.error("Build failed: \(error.localizedDescription)", source: "ViewController")
                 DispatchQueue.main.async {
                     self.progressLabel.stringValue = "Build failed: \(error.localizedDescription)"
                 }
@@ -152,6 +165,10 @@ class ViewController: NSViewController {
     
     @IBAction func openGitHubRepository(_ sender: Any?) {
         NSWorkspace.shared.open(URL(string: "https://github.com/gilburns/PhatPKG")!)
+    }
+    
+    @IBAction func toggleLogPanel(_ sender: Any?) {
+        toggleLogPanelVisibility()
     }
 
     // MARK: - Text Field Actions
@@ -198,11 +215,90 @@ class ViewController: NSViewController {
         return !trimmed.isEmpty
     }
     
-    /// Logs messages to console
-    /// Provides consistent logging format for update operations
+    // MARK: - Log Panel Methods
+    
+    private func setupLogPanel() {
+        // Initialize log panel but keep it hidden
+        logPanelContainer.isHidden = true
+        showLogPanelButton.title = "Show Logs"
+        
+        // Load log panel view controller
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        if let logVC = storyboard.instantiateController(withIdentifier: "LogPanelViewController") as? LogPanelViewController {
+            logPanelViewController = logVC
+            
+            // Add as child view controller
+            addChild(logVC)
+            logPanelContainer.addSubview(logVC.view)
+            
+            // Setup constraints
+            logVC.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                logVC.view.topAnchor.constraint(equalTo: logPanelContainer.topAnchor),
+                logVC.view.leadingAnchor.constraint(equalTo: logPanelContainer.leadingAnchor),
+                logVC.view.trailingAnchor.constraint(equalTo: logPanelContainer.trailingAnchor),
+                logVC.view.bottomAnchor.constraint(equalTo: logPanelContainer.bottomAnchor)
+            ])
+        }
+    }
+    
+    private func toggleLogPanelVisibility() {
+        logPanelVisible.toggle()
+        
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.4
+            context.allowsImplicitAnimation = true
+            
+            if logPanelVisible {
+                logPanelContainer.isHidden = false
+                showLogPanelButton.title = "Hide Logs"
+                showLogPanelButton.image = NSImage(systemSymbolName: "chevron.down", accessibilityDescription: "Hide Logs")
+                
+                // Expand window height
+                if let window = view.window {
+                    let currentFrame = window.frame
+                    let newFrame = NSRect(
+                        x: currentFrame.origin.x,
+                        y: currentFrame.origin.y - 200, // Move up to accommodate panel
+                        width: currentFrame.width,
+                        height: currentFrame.height + 200 // Add height for panel
+                    )
+                    window.setFrame(newFrame, display: true, animate: true)
+                    
+                    let newSize = NSSize(width: currentFrame.width, height: currentFrame.height + 200)
+                    window.minSize = newSize
+                    window.maxSize = newSize
+                    
+                }
+            } else {
+                logPanelContainer.isHidden = true
+                showLogPanelButton.title = "Show Logs"
+                showLogPanelButton.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Show Logs")
+
+                // Collapse window height
+                if let window = view.window {
+                    let currentFrame = window.frame
+                    let newFrame = NSRect(
+                        x: currentFrame.origin.x,
+                        y: currentFrame.origin.y + 200, // Move down
+                        width: currentFrame.width,
+                        height: currentFrame.height - 200 // Remove height
+                    )
+                    window.setFrame(newFrame, display: true, animate: true)
+                    
+                    let newSize = NSSize(width: currentFrame.width, height: currentFrame.height - 200)
+                    window.minSize = newSize
+                    window.maxSize = newSize
+
+                }
+            }
+        })
+    }
+    
+    /// Logs messages using the centralized LogManager
     /// - Parameter message: Message to log
     func log(_ message: String) {
-        print("[PhatPKG] \(message)")
+        LogManager.shared.info(message, source: "ViewController")
     }
 }
 
